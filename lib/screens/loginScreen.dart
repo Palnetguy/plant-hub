@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:plant_scan/screens/account%20creation/acount_creation.dart';
 import 'package:plant_scan/screens/homeScreen.dart';
 import 'package:plant_scan/screens/settings.dart';
@@ -46,8 +47,19 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
+
   String email = '';
   String password = '';
+
+  @override
+  void dispose() {
+    super.dispose();
+    _email.dispose();
+    _password.dispose();
+  }
 
   // validation
 // check password
@@ -55,7 +67,7 @@ class _LoginFormState extends State<LoginForm> {
     return (password.length >= 6);
   }
 
-  // check the whole thing
+  // // check the whole thing
   bool _isValidToLogIn({
     required String email,
     required String password,
@@ -72,18 +84,22 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           InputFieldModule(
             placeholder: 'Enter email',
+            controller: _email,
             icon: Icons.email_outlined,
             onChanged: (value) {
               setState(() {
                 email = value;
+                _email.text = value;
               });
             },
           ),
           InputFieldModulePasswordNoLable(
             placeholder: 'Enter password',
+            controller: _password,
             onChanged: (value) {
               setState(() {
                 password = value;
+                _password.text = value;
               });
             },
           ),
@@ -104,14 +120,15 @@ class _LoginFormState extends State<LoginForm> {
           GestureDetector(
             onTap: () {
               if (_isValidToLogIn(email: email, password: password)) {
+                login();
                 // to home screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    // to main screen
-                    builder: (context) => const ScreenNavLayout(),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     // to main screen
+                //     builder: (context) => const ScreenNavLayout(),
+                //   ),
+                // );
               }
             },
             child: AnimatedContainer(
@@ -120,18 +137,18 @@ class _LoginFormState extends State<LoginForm> {
               padding: const EdgeInsets.symmetric(vertical: 12),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: !_isValidToLogIn(email: email, password: password)
-                    ? buttonColor.withOpacity(.3)
-                    : buttonColor,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
                   color: !_isValidToLogIn(email: email, password: password)
-                      ? color1.withOpacity(.3)
-                      : color1,
-                  width: 1,
-                  style: BorderStyle.solid,
-                ),
-              ),
+                      ? buttonColor.withOpacity(.3)
+                      : buttonColor,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: !_isValidToLogIn(email: email, password: password)
+                        ? color1.withOpacity(.3)
+                        : color1,
+                    width: 1,
+                    style: BorderStyle.solid,
+                  ),
+                  ),
               child: const Text(
                 'Log in',
                 textAlign: TextAlign.center,
@@ -226,6 +243,40 @@ class _LoginFormState extends State<LoginForm> {
         ],
       ),
     );
+  }
+
+  login() async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
+              email: _email.text, password: _password.text);
+      // ignore: unnecessary_null_comparison
+      if (userCredential != null) {
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ScreenNavLayout(),
+          ),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('User not found'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      } else if (e.code == 'wrong-password') {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Password is incorrect'),
+          backgroundColor: Colors.redAccent,
+        ));
+      }
+    }
   }
 }
 

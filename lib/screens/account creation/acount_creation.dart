@@ -1,5 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:plant_scan/screens/account%20creation/successfully_created_account.dart';
+import 'package:plant_scan/widgets/ScreenNavLayout.dart';
 import 'package:plant_scan/widgets/custom_password_inputs_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -349,6 +353,21 @@ class StepOneCreateAccount extends StatefulWidget {
 }
 
 class _StepOneCreateAccountState extends State<StepOneCreateAccount> {
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _name = TextEditingController();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _confirmPassword = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _name.dispose();
+    _email.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
+  }
+
   String name = '';
   String email = '';
   String password = '';
@@ -381,52 +400,61 @@ class _StepOneCreateAccountState extends State<StepOneCreateAccount> {
         InputFieldModule(
           icon: Icons.person_outline_rounded,
           placeholder: 'Name',
+          controller: _name,
           errorText: 'please fill in the field', // this one is optional if need
           onChanged: (value) {
             setState(() {
               name = value;
+              _name.text = value;
             });
           },
         ),
         InputFieldModule(
           icon: Icons.email_outlined,
           placeholder: 'Email',
+          controller: _email,
           errorText: 'please fill in the field', // this one is optional if need
           onChanged: (value) {
             setState(() {
               email = value;
+              _email.text = value;
             });
           },
         ),
         InputFieldModulePasswordNoLable(
           placeholder: 'Enter password',
+          controller: _password,
           errorText: 'please fill in the field', // this one is optional if need
           onChanged: (value) {
             setState(() {
               password = value;
+              _password.text = value;
             });
           },
         ),
         InputFieldModulePasswordNoLable(
           placeholder: 'Confirm password',
+          controller: _confirmPassword,
           errorText: 'please fill in the field', // this one is optional if need
           onChanged: (value) {
             setState(() {
               confirmPassword = value;
+              _confirmPassword.text = value; 
             });
           },
         ),
         // text button
         GestureDetector(
           onTap: () {
-            if (_isValidToCreateAccount(
-              name: name,
-              email: email,
-              password: password,
-              confirmPassword: confirmPassword,
-            )) {
-              widget.goToNext!();
-            }
+            _signUp();
+            // if (_isValidToCreateAccount(
+            //   name: name,
+            //   email: email,
+            //   password: password,
+            //   confirmPassword: confirmPassword,
+            // )) {
+            //   widget.goToNext!();
+            // }
             // setState() {
             // }
             // Navigator.pop(context);
@@ -518,10 +546,48 @@ class _StepOneCreateAccountState extends State<StepOneCreateAccount> {
       ],
     );
   }
+
+  void _signUp() async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+              email: _email.text, password: _password.text);
+      // ignore: unnecessary_null_comparison
+      if (userCredential != null) {
+        userCredential.user!.updateDisplayName(_name.text);
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ScreenNavLayout(),
+          ),
+          result: (route) => false);
+      }
+    }on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Create a strong password'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      } else if (e.code == 'email-already-in-use'){
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Email already in use'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }      
+  }
 }
 
 // inputText Module
 class InputFieldModule extends StatefulWidget {
+  TextEditingController? controller;
   final String placeholder;
   final dynamic icon;
   bool? thereIsError = false;
@@ -530,6 +596,7 @@ class InputFieldModule extends StatefulWidget {
   final ValueChanged<String>? onChanged;
 
   InputFieldModule({
+    this.controller,
     super.key,
     required this.placeholder,
     required this.icon,

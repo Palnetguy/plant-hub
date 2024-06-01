@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "720447894125",
+    "project_id": "plant-hub-6080d",
+    "storage_bucket": "plant-hub-6080d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720447894125:android:561e2855417a891c8e8564",
+        "android_client_info": {
+          "package_name": "com.example.planthub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyETjrC_16_URW1-taKTxaozhAV2SVnnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

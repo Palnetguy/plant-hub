@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:plant_scan/constants/const.dart';
 import 'package:flutter/material.dart';
 
@@ -142,7 +143,7 @@ class _InputFieldModulePasswordWithLableState
 // pass
 class InputFieldModulePasswordNoLable extends StatefulWidget {
   final String placeholder;
-
+  TextEditingController? controller;
   bool? thereIsError = false;
   String? errorText = '';
 
@@ -150,6 +151,7 @@ class InputFieldModulePasswordNoLable extends StatefulWidget {
   final ValueChanged<String>? onChanged;
 
   InputFieldModulePasswordNoLable({
+    this.controller,
     super.key,
     required this.placeholder,
     this.thereIsError = false,
