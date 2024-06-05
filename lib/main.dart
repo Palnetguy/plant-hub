@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
 import 'package:plant_scan/auth/firebase_options.dart';
+import 'package:plant_scan/controllers/auth_contoller.dart';
 import 'screens/SplashScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: firebaseOptions);
-  runApp(
-      const MyApp()); // Now isntall the firebase? I hope that it doenst break
+  await Firebase.initializeApp(options: firebaseOptions).then((value) {
+    Get.put(AuthController());
+  });
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +19,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return const GetMaterialApp(
+      title: 'Plant Hub',
       home: SplashScreen(),
     );
   }

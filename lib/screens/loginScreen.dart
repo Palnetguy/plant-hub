@@ -1,16 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import 'package:plant_scan/controllers/auth_contoller.dart';
 import 'package:plant_scan/screens/account%20creation/acount_creation.dart';
-import 'package:plant_scan/screens/homeScreen.dart';
-import 'package:plant_scan/screens/settings.dart';
 import 'package:plant_scan/widgets/ScreenNavLayout.dart';
 import 'package:plant_scan/widgets/custom_password_inputs_widgets.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:plant_scan/constants/const.dart';
+
+import '../widgets/custom_input_filed_widget.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -61,188 +60,172 @@ class _LoginFormState extends State<LoginForm> {
     _password.dispose();
   }
 
-  // validation
-// check password
-  bool _isValidPassword(String password) {
-    return (password.length >= 6);
-  }
-
-  // // check the whole thing
-  bool _isValidToLogIn({
-    required String email,
-    required String password,
-  }) {
-    return isValidEmail(email) && _isValidPassword(password);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          InputFieldModule(
-            placeholder: 'Enter email',
-            controller: _email,
-            icon: Icons.email_outlined,
-            onChanged: (value) {
-              setState(() {
-                email = value;
-                _email.text = value;
-              });
-            },
-          ),
-          InputFieldModulePasswordNoLable(
-            placeholder: 'Enter password',
-            controller: _password,
-            onChanged: (value) {
-              setState(() {
-                password = value;
-                _password.text = value;
-              });
-            },
-          ),
-          const Text(
-            'Forgort password',
-            // textAlign: TextAlign.end,
-            style: TextStyle(
-              color: color1,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              decoration: TextDecoration.underline,
-              decorationColor: color1,
-            ),
-          ),
-
-          // button
-          //  for login
-          GestureDetector(
-            onTap: () {
-              if (_isValidToLogIn(email: email, password: password)) {
-                login();
-                // to home screen
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     // to main screen
-                //     builder: (context) => const ScreenNavLayout(),
-                //   ),
-                // );
-              }
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              margin: const EdgeInsets.only(top: 35),
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: !_isValidToLogIn(email: email, password: password)
-                      ? buttonColor.withOpacity(.3)
-                      : buttonColor,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: !_isValidToLogIn(email: email, password: password)
-                        ? color1.withOpacity(.3)
-                        : color1,
-                    width: 1,
-                    style: BorderStyle.solid,
-                  ),
-                  ),
-              child: const Text(
-                'Log in',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: textColor2,
-                ),
-              ),
-            ),
-          ),
-
-          // for the buttons
-
-          // bisector
-
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
+    return GetBuilder<AuthController>(
+        init: AuthController(),
+        builder: (authCtrl) {
+          return Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 2,
-                    color: buttonColor,
+                InputFieldModule(
+                  icon: Icons.email_outlined,
+                  placeholder: 'Email',
+                  controller: authCtrl.email,
+                  thereIsError: authCtrl.emailError,
+                  errorText:
+                      authCtrl.emailErrorText, // this one is optional if need
+                  onChanged: (value) {
+                    authCtrl.email.text = value;
+                    authCtrl.update();
+                    authCtrl.isValidEmailFunc();
+                  },
+                ),
+                InputFieldModulePasswordNoLable(
+                  placeholder: 'Enter password',
+                  controller: authCtrl.password,
+                  // thereIsError: authCtrl.passwordError,
+                  errorText: authCtrl
+                      .passwordErrorText, // this one is optional if need
+                  onChanged: (value) {
+                    authCtrl.password.text = value;
+                    authCtrl.update();
+                    authCtrl.isValidPasswordFunc();
+                  },
+                ),
+                const Text(
+                  'Forgort password',
+                  // textAlign: TextAlign.end,
+                  style: TextStyle(
+                    color: color1,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                    decorationColor: color1,
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
+
+                // button
+                //  for login
+                GestureDetector(
+                  onTap: () {
+                    authCtrl.login();
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    margin: const EdgeInsets.only(top: 35),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: !authCtrl.isValidToLogIn()
+                          ? buttonColor.withOpacity(.3)
+                          : buttonColor,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: !authCtrl.isValidToLogIn()
+                            ? color1.withOpacity(.3)
+                            : color1,
+                        width: 1,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
                     child: const Text(
-                      'Or',
+                      'Log in',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.black,
                         fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
+                        color: textColor2,
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 3,
+
+                // for the buttons
+
+                // bisector
+
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          height: 2,
+                          color: buttonColor,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          child: const Text(
+                            'Or',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          height: 2,
+                          color: buttonColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // ---bs
+
+                //  for resiser
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AccountCreation(),
+                      ),
+                    );
+                  },
                   child: Container(
-                    height: 2,
-                    color: buttonColor,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(.3),
+                          Colors.white.withOpacity(.1)
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: buttonColor,
+                        width: 1,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    child: const Text(
+                      'Register',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: buttonColor,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-          // ---bs
-
-          //  for resiser
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AccountCreation(),
-                ),
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withOpacity(.3),
-                    Colors.white.withOpacity(.1)
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: buttonColor,
-                  width: 1,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              child: const Text(
-                'Register',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: buttonColor,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
   login() async {

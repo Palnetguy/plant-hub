@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:plant_scan/controllers/auth_contoller.dart';
 import 'package:plant_scan/screens/account%20creation/acount_creation.dart';
 import 'package:plant_scan/widgets/custom_password_inputs_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import 'package:plant_scan/constants/const.dart';
+
+import '../../widgets/custom_input_filed_widget.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -178,7 +181,7 @@ class _StepOneForgotPasswordState extends State<StepOneForgotPassword> {
         GestureDetector(
           onTap: () {
             // validate here
-            if (isValidEmail(email)) {
+            if (AuthController().isValidEmail) {
               widget.goToNext();
             }
           },
@@ -187,7 +190,7 @@ class _StepOneForgotPasswordState extends State<StepOneForgotPassword> {
             margin: const EdgeInsets.only(top: 15),
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             decoration: BoxDecoration(
-              color: !isValidEmail(email)
+              color: !AuthController().isValidEmail
                   ? buttonColor.withOpacity(.3)
                   : buttonColor,
               borderRadius: BorderRadius.circular(15),
