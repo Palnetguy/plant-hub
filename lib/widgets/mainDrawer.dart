@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:plant_scan/screens/loginScreen.dart';
 import 'package:plant_scan/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -82,12 +84,13 @@ class MainDrawer extends StatelessWidget {
 
             // footer
 
-            const Footer()
+             Footer()
           ],
         ),
       ),
     );
   }
+  
 }
 
 // drawerHeader
@@ -252,7 +255,9 @@ class EachTabModule extends StatelessWidget {
 // FOOTER
 
 class Footer extends StatelessWidget {
-  const Footer({super.key});
+  final _firebaseAuth = FirebaseAuth.instance;
+
+  Footer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +268,7 @@ class Footer extends StatelessWidget {
         children: [
           // logoutButton
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
             decoration: BoxDecoration(
               color: textColorForDrawer,
               borderRadius: BorderRadius.circular(5),
@@ -277,14 +282,17 @@ class Footer extends StatelessWidget {
                   color: bgForDrawer,
                 ),
                 // text
-                Container(
-                  margin: const EdgeInsets.only(left: 15 / 2),
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(
-                      color: bgForDrawer,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                TextButton(
+                  onPressed: () => logout(context),
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 15 / 2),
+                    child: const Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: bgForDrawer,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 )
@@ -303,5 +311,10 @@ class Footer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  logout(BuildContext context) async {
+    await _firebaseAuth.signOut().then((user) => Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const LoginScreen())));
   }
 }

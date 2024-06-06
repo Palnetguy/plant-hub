@@ -103,6 +103,7 @@ class _LoginFormState extends State<LoginForm> {
               });
             },
           ),
+          const SizedBox(height: 10,),
           const Text(
             'Forgort password',
             // textAlign: TextAlign.end,
