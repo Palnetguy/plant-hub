@@ -5,6 +5,10 @@ import 'package:plant_scan/screens/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'drawer_header_widget.dart';
+import 'each_tab_module_widget.dart';
+import 'footer_widget.dart';
+
 const bgForDrawer = Color(0xFF003F44);
 const textColorForDrawer = Color(0xFFFFFFFF);
 // const bgForDrawer = Color(0xFF003F44);
@@ -27,7 +31,7 @@ class MainDrawer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // header
-            const DrawerHaader(),
+            DrawerHaader(),
             // middle tabs
 
             Expanded(
@@ -47,14 +51,18 @@ class MainDrawer extends StatelessWidget {
                       icon: Icons.person_3_outlined,
                       text: 'Profile',
                       navigateTo: () {
-                        drawerGoTo!(3);
+                        if (drawerGoTo != null) {
+                          drawerGoTo!(3);
+                        }
                       },
                     ),
                     EachTabModule(
                       icon: Icons.save,
                       text: 'Saves',
                       navigateTo: () {
-                        drawerGoTo!(2);
+                        if (drawerGoTo != null) {
+                          drawerGoTo!(2);
+                        }
                       },
                     ),
                     EachTabModule(

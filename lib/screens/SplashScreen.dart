@@ -8,15 +8,15 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Introduce a delay to simulate a splash screen
-    Future.delayed(const Duration(seconds: 5), () {
-      // After the delay, navigate to the main screen of your app
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        ),
-      );
-    });
+    // // Introduce a delay to simulate a splash screen
+    // Future.delayed(const Duration(seconds: 5), () {
+    //   // After the delay, navigate to the main screen of your app
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(
+    //       builder: (context) => const WelcomeScreen(),
+    //     ),
+    //   );
+    // });
 
     return Scaffold(
       body: SizedBox(
@@ -66,7 +66,7 @@ class SplashScreen extends StatelessWidget {
                         onPlay: (controller) => controller.repeat(),
                       )
                       .rotate(
-                        duration: const Duration(seconds: 1),
+                        duration: const Duration(seconds: 2),
                       )
                 ],
               ),

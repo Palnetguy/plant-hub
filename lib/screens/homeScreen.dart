@@ -1,8 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:plant_scan/constants/const.dart';
 import 'package:plant_scan/screens/searchFunctionScreen.dart';
@@ -27,7 +24,9 @@ class HomeScreen extends StatelessWidget {
 
           GestureDetector(
             onTap: () {
-              goToProfile!();
+              if (goToProfile != null) {
+                goToProfile!();
+              }
             },
             child: Container(
               margin: const EdgeInsets.only(right: 20),
@@ -70,7 +69,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       drawer: MainDrawer(
-        drawerGoTo: drawerTo!(),
+        drawerGoTo: drawerTo != null ? drawerTo!() : null,
       ),
       body: Container(
         color: Colors.white,

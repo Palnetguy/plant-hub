@@ -1,9 +1,7 @@
 import 'package:plant_scan/constants/const.dart';
 import 'package:plant_scan/screens/account%20creation/acount_creation.dart';
 import 'package:plant_scan/screens/loginScreen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

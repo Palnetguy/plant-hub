@@ -1,8 +1,9 @@
-// inputText Module
-import 'package:plant_scan/constants/const.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
-class InputFieldModule extends StatefulWidget {
+import '../constants/const.dart';
+
+class InputFieldModuleNumber extends StatefulWidget {
   final String placeholder;
   final dynamic icon;
   bool? thereIsError = false;
@@ -10,7 +11,7 @@ class InputFieldModule extends StatefulWidget {
 
   final ValueChanged<String>? onChanged;
 
-  InputFieldModule({
+  InputFieldModuleNumber({
     super.key,
     required this.placeholder,
     required this.icon,
@@ -20,10 +21,10 @@ class InputFieldModule extends StatefulWidget {
   });
 
   @override
-  State<InputFieldModule> createState() => _InputFieldModuleState();
+  State<InputFieldModuleNumber> createState() => _InputFieldModuleNumberState();
 }
 
-class _InputFieldModuleState extends State<InputFieldModule> {
+class _InputFieldModuleNumberState extends State<InputFieldModuleNumber> {
   bool isFilled = false;
 
   String textEntered = '';
@@ -34,19 +35,31 @@ class _InputFieldModuleState extends State<InputFieldModule> {
       margin: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          TextField(
-            onChanged: (value) {
-              widget.onChanged?.call(value);
+          IntlPhoneField(
+            // decoration: const InputDecoration(
+            //
+            //   border: OutlineInputBorder(
+            //     borderSide: BorderSide(),
+            //   ),
+            // ),
+
+            initialCountryCode: 'UG',
+            onChanged: (phone) {
+              // print(phone.completeNumber);
               setState(() {
-                textEntered = value;
+                textEntered = phone.completeNumber;
               });
+
+              widget.onChanged?.call(phone.completeNumber);
             },
+
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w400,
               color: color1,
             ),
             decoration: InputDecoration(
+              // labelText: 'Phone Number',
               contentPadding: const EdgeInsets.all(15),
               prefixIcon: Icon(
                 widget.icon,
@@ -107,6 +120,22 @@ class _InputFieldModuleState extends State<InputFieldModule> {
               : const SizedBox()
         ],
       ),
+    );
+  }
+}
+
+// the select line
+class TheSelectLine extends StatelessWidget {
+  const TheSelectLine({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 96,
+      height: 2.5,
+      color: buttonColor,
     );
   }
 }
